@@ -1,0 +1,27 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+
+<div class="album py-4 bg-body-tertiary text-center">
+    <h1>Sender - our logs</h1>
+    <div class="container">
+        <div class="row">
+            {% for object in object_list %}
+            {% if object.owner == request.user or request.user.is_superuser %}
+            <div class="col-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <p>: {{ object.try_status }}</p>
+                        <p>Response: {{ object.try_response }}</p>
+                        <p>Date: {{ object.try_date }}</p>
+                        <p>List of emails: {{ object.email }}</p>
+                        <div class="btn-group">
+                            <a href="{% url 'log:log_delete' object.pk %}" type="button"
+                               class="btn btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endblock %}

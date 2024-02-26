@@ -1,0 +1,39 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+
+<div class="album py-4 bg-body-tertiary text-center">
+    <h1>Сервис управления рассылками, администрирования и получения статистики</h1>
+</div>
+<div class="album py-4 bg-body-tertiary text-center">
+    <h4>Количество рассылок: {{ mail_count }}</h4>
+</div>
+<div class="album py-4 bg-body-tertiary text-center">
+    <h4>Количество активных рассылок: {{ active_mail_count }}</h4>
+</div>
+<div class="album py-4 bg-body-tertiary text-center">
+    <h4>Количество уникальных клиентов: {{ clients_count }}</h4>
+</div>
+<div class="container">
+        <div class="row">
+            {% for object in blogs %}
+            <div class="col-lg-4 col-md-3 col-sm-3 col-xs-6">
+                <div class="card shadow-sm">
+                    <div class="text-center">
+                        <img src="/media/{{ object.preview }}" class="rounded" alt="preview" width="100%" height="100">
+                    </div>
+                    <p class="text-center fw-bold">
+                        {{ object.title | title }}
+                    </p>
+                    <div class="card-body">
+                        <p class="text-center">{{ object.content | truncatechars:100}}</p>
+                        <p class="text-end"></p>
+                        <p class="text-end">{{ object.date_publicised }}</p>
+                        <p class="text-end">{{ object.view_count }} views</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

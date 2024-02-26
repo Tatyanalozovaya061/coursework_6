@@ -1,0 +1,23 @@
+{% extends 'mailing/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col">
+    <a href="{% url 'blog:blog_list' %}" type="button"
+       class="btn btn-success">Вернуться</a>
+    <div class="card shadow-sm">
+        <div class="text-center">
+            <img src="/media/{{ object.image }}" width="500" height="250" class="rounded" alt="Card image cap">
+        </div>
+        <p class="text-center fw-bold">
+            {{ object.title | title }}
+        </p>
+        <div class="card-body">
+            <p class="text-center">{{ object.content }}</p>
+            <p class="text-end"></p>
+            <p class="text-end">{{ object.date_created }}</p>
+            <p class="text-end">{{ object.view_count }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

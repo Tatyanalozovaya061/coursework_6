@@ -1,0 +1,21 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+
+<div class="col-5">
+    <a href="{% url 'client:client_list' %}" type="button"
+       class="btn btn-success">Назад</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p>{{ object.fullname | title }}</p>
+            <p>{{ object.email}}</p>
+            <p>{{ object.comment}}</p>
+            <div class="btn-group">
+                <a href="{% url 'client:client_update' object.pk %}" type="button"
+                   class="btn btn-success">Редактировать</a>
+                <a href="{% url 'client:client_delete' object.pk %}" type="button"
+                   class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

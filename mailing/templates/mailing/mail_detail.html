@@ -1,0 +1,42 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+
+<div class="col-4">
+    <a href="{% url 'mailing:mail_list' %}" type="button"
+       class="btn btn-success">Назад</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p>{{ object.subject | title }}</p>
+            <p>{{ object.body | truncatechars:100}}</p>
+            {% if object.owner == request.user %}
+            <div class="btn-group">
+                <a href="{% url 'mailing:mail_update' object.pk %}" type="button"
+                   class="btn btn-success">Редактировать</a>
+                <a href="{% url 'mailing:mail_delete' object.pk %}" type="button"
+                   class="btn btn-danger">Удалить</a>
+            </div>
+            {% endif %}
+            <p></p>
+            <p>Начало: {{ object.start_date }}</p>
+            <p>Конец: {{ object.end_date }}</p>
+            <p>Периодичность: {{ object.periodicity }}</p>
+            <p>Статус: {{ object.status }}</p>
+            <p>Список клиентов:</p>
+            {% for i in object.clients.all %}
+            <p>{{ i }}</p>
+            {% endfor %}
+            <p>Следующая: {{ object.next_date }}</p>
+            {% if user.is_staff or user.is_superuser %}
+            <p>Автор: {{ object.owner }}</p>
+            {% if object.is_active %}
+            <a href="{% url 'mailing:deactivate_mail' object.pk %}" type="button"
+               class="btn btn-danger">Деактивация рассылки</a>
+            {% else %}
+            <a href="{% url 'mailing:activate_mail' object.pk %}" type="button"
+               class="btn btn-success">Активация рассылки</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
