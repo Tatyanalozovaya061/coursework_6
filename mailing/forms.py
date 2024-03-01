@@ -18,8 +18,8 @@ class MailForm(StyleFormMixin, forms.ModelForm):
         self.request = kwargs.pop('request')
         user = self.request.user
         super().__init__(*args, **kwargs)
-        self.fields['client'].queryset = Client.objects.filter(user=user)
-        self.fields['message'].queryset = Message.objects.filter(user=user)
+        self.fields['client'].queryset = Client.objects.filter(owner=user)
+        self.fields['message'].queryset = Message.objects.filter(owner=user)
 
     class Meta:
         model = Mail

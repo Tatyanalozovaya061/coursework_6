@@ -24,8 +24,6 @@
                     <h4>Меню</h4>
                     <a href="{% url 'mailing:home' %}" type="button"
                        class="btn btn-sm btn-outline-secondary">Главная</a>
-                    <a href="{% url 'users:register' %}" type="button"
-                       class="btn btn-sm btn-outline-secondary">Регистрация</a>
                     <a href="{% url 'mailing:client_list' %}" type="button"
                        class="btn btn-sm btn-outline-secondary">Клиенты</a>
                     <a href="{% url 'mailing:mail_list' %}" type="button"
@@ -34,10 +32,15 @@
                        class="btn btn-sm btn-outline-secondary">Сообщения</a>
                     <a href="{% url 'blog:blog_list' %}" type="button"
                        class="btn btn-sm btn-outline-secondary">Блог</a>
-                    <a href="{% url 'users:login' %}" type="button"
-                       class="btn btn-sm btn-outline-secondary">Вход</a>
+                    {% if user.is_authenticated %}
                     <a href="{% url 'users:login' %}" type="button"
                        class="btn btn-sm btn-outline-secondary">Выход</a>
+                    {% else %}
+                    <a href="{% url 'users:register' %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Регистрация</a>
+                    <a href="{% url 'users:login' %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Вход</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

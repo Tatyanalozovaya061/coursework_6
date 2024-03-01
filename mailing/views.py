@@ -39,7 +39,6 @@ class ClientListView(LoginRequiredMixin, ListView):
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
-    fields = ('fullname', 'email', 'comment')
     # permission_required = 'client.add_client'
     success_url = reverse_lazy('client:client_list')
 
@@ -65,7 +64,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     fields = ('fullname', 'email', 'comment')
 
     def get_success_url(self):
-        return reverse('client:client_view', args=[self.object.pk])
+        return reverse('mailing:client_view', args=[self.object.pk])
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -181,7 +180,7 @@ class MessageCreateView(CreateView):
         return super().form_valid(form)
 
 
-class MessageListView(ListView):
+class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     extra_context = {
         'title': 'Список сообщений'
@@ -189,7 +188,7 @@ class MessageListView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
-        queryset = Message.objects.filter(user=self.request.user)
+        queryset = Message.objects.filter(owner=self.request.user)
         return queryset
 
 
