@@ -28,13 +28,7 @@
             <p>Следующая: {{ object.next_date }}</p>
             {% if user.is_staff or user.is_superuser %}
             <p>Автор: {{ object.owner }}</p>
-            {% if object.is_active %}
-            <a href="{% url 'mailing:deactivate_mail' object.pk %}" type="button"
-               class="btn btn-danger">Деактивация рассылки</a>
-            {% else %}
-            <a href="{% url 'mailing:activate_mail' object.pk %}" type="button"
-               class="btn btn-success">Активация рассылки</a>
-            {% endif %}
+
             {% endif %}
         </div>
     </div>

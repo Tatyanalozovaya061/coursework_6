@@ -1,12 +1,19 @@
+from random import random
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.utils.crypto import get_random_string
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views import View
+from django.views.generic import CreateView, UpdateView
 
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
@@ -18,11 +25,6 @@ class LoginView(BaseLoginView):
 
 class LogoutView(BaseLogoutView):
     pass
-
-
-# class UserListView(ListView):
-#     model = User
-#     permission_required = 'users.view_user'
 
 
 class RegisterView(CreateView):

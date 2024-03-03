@@ -9,7 +9,7 @@
                     {% csrf_token %}
                     <p>Вы уверенны?</p>
                     <button type="submit" class="btn btn-danger">Удалить</button>
-                    <a href="{% url 'mailing:blog_list' %}" type="button"
+                    <a href="{% url 'blog:blog_list' %}" type="button"
                        class="btn btn-success">Отмена</a>
                 </form>
             </div>

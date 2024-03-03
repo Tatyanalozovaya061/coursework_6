@@ -10,9 +10,9 @@
             <p>{{ object.email}}</p>
             <p>{{ object.comment}}</p>
             <div class="btn-group">
-                <a href="{% url 'client:client_update' object.pk %}" type="button"
+                <a href="{% url 'mailing:client_update' object.pk %}" type="button"
                    class="btn btn-success">Редактировать</a>
-                <a href="{% url 'client:client_delete' object.pk %}" type="button"
+                <a href="{% url 'mailing:client_delete' object.pk %}" type="button"
                    class="btn btn-danger">Удалить</a>
             </div>
         </div>

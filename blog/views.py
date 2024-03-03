@@ -9,9 +9,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Blog
-    fields = ('title', 'content', 'image', 'view_count')
+    fields = ('title', 'content', 'image', 'view_count', 'date_created',)
     success_url = reverse_lazy('blog:blog_list')
-    permission_required = ('blog.add_blog',),
+    permission_required = ('blog.add_blog',)
 
     def form_valid(self, form):
         if form.is_valid():

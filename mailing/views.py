@@ -12,78 +12,6 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class HomeView(ListView):
-    model = Mail
-    template_name = 'mailing/home.html'
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data['mail_count'] = len(Mail.objects.all())
-        context_data['active_mail_count'] = len(Mail.objects.filter(is_active=True))
-        context_data['clients_count'] = len(Client.objects.all())
-        blogs = list(Blog.objects.all())
-        random.shuffle(blogs)
-        context_data['blogs'] = blogs[:3]
-        return context_data
-
-
-class ClientListView(LoginRequiredMixin, ListView):
-    model = Client
-
-    def get(self, request):
-        if self.request.user.is_staff and not self.request.user.is_superuser:
-            raise Http404
-        return super().get(request)
-
-
-class ClientCreateView(LoginRequiredMixin, CreateView):
-    model = Client
-    form_class = ClientForm
-    # permission_required = 'client.add_client'
-    success_url = reverse_lazy('client:client_list')
-
-    def form_valid(self, form):
-        self.object = form.save()
-        self.object.owner = self.request.user
-        self.object.save()
-        return super().form_valid(form)
-
-
-class ClientDetailView(LoginRequiredMixin, DetailView):
-    model = Client
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_superuser:
-            raise Http404
-        return self.object
-
-
-class ClientUpdateView(LoginRequiredMixin, UpdateView):
-    model = Client
-    fields = ('fullname', 'email', 'comment')
-
-    def get_success_url(self):
-        return reverse('mailing:client_view', args=[self.object.pk])
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_superuser:
-            raise Http404
-        return self.object
-
-
-class ClientDeleteView(LoginRequiredMixin, DeleteView):
-    model = Client
-    success_url = reverse_lazy('client:client_list')
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_superuser:
-            raise Http404
-        return self.object
-
-
 class MailListView(LoginRequiredMixin, ListView):
     model = Mail
 
@@ -147,22 +75,76 @@ class MailDeleteView(LoginRequiredMixin, DeleteView):
         return self.object
 
 
-@login_required
-@permission_required('mailing.set_is_active', login_url='mailing:mail_list')
-def deactivate_mail(request, pk):
-    user = Mail.objects.get(pk=pk)
-    user.is_active = False
-    user.save()
-    return redirect(reverse('mailing:mail_list'))
+class HomeView(ListView):
+    model = Mail
+    template_name = 'mailing/home.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['mail_count'] = len(Mail.objects.all())
+        context_data['active_mail_count'] = len(Mail.objects.filter(is_active=True))
+        context_data['clients_count'] = len(Client.objects.all())
+        blogs = list(Blog.objects.all())
+        random.shuffle(blogs)
+        context_data['blogs'] = blogs[:3]
+        return context_data
 
 
-@login_required
-@permission_required('mailing.set_is_active', login_url='mailing:mail_list')
-def activate_mail(request, pk):
-    user = Mail.objects.get(pk=pk)
-    user.is_active = True
-    user.save()
-    return redirect(reverse('mailing:mail_list'))
+class ClientListView(LoginRequiredMixin, ListView):
+    model = Client
+
+    def get(self, request):
+        if self.request.user.is_staff and not self.request.user.is_superuser:
+            raise Http404
+        return super().get(request)
+
+
+class ClientCreateView(LoginRequiredMixin, CreateView):
+    model = Client
+    form_class = ClientForm
+    # permission_required = 'client.add_client'
+    success_url = reverse_lazy('mailing:client_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class ClientDetailView(LoginRequiredMixin, DetailView):
+    model = Client
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
+
+
+class ClientUpdateView(LoginRequiredMixin, UpdateView):
+    model = Client
+    fields = ('fullname', 'email', 'comment')
+
+    def get_success_url(self):
+        return reverse('mailing:client_view', args=[self.object.pk])
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
+
+
+class ClientDeleteView(LoginRequiredMixin, DeleteView):
+    model = Client
+    success_url = reverse_lazy('mailing:client_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
 
 
 class MessageCreateView(CreateView):
