@@ -1,51 +1,61 @@
 {% extends 'mailing/base.html' %}
 {% block content %}
 
-<div class="album py-4 bg-body-tertiary text-center">
-    <h1>Рассылки</h1>
+<!--<div class="album py-4 bg-body-tertiary text-center">-->
+<!--    <h1>Рассылки</h1>-->
+
+<section class="jumbotron text-center">
     <div class="container">
-        <div class="row">
-            <p class="d-inline-flex gap-1">
-                <a href="{% url 'mailing:mail_create' %}" type="button"
-                   class="btn btn-success">Добавить рассылку</a>
-            </p>
-            {% for object in object_list %}
-            {% if user.is_staff or user.is_superuser or object.owner == user %}
-            <div class="col-3">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <p>{{ object.subject | title }}</p>
-                        <p>{{ object.body | truncatechars:100}}</p>
-                        <div class="btn-group">
-                            <a href="{% url 'mailing:mail_view' object.pk %}" type="button"
-                               class="btn btn-success">Подробнее</a>
-                            {% if user.is_superuser or object.owner == user %}
-                            <a href="{% url 'mailing:mail_update' object.pk %}" type="button"
-                               class="btn btn-success">Редактировать</a>
-                            <a href="{% url 'mailing:mail_delete' object.pk %}" type="button"
-                               class="btn btn-danger">Удалить</a>
-                            {% endif %}
-                        </div>
-                        <p></p>
-                        <p>Начало: {{ object.start_date }}</p>
-                        <p>Конец: {{ object.end_date }}</p>
-                        <p>Периодичность: {{ object.periodicity }}</p>
-                        <p>Статус: {{ object.status }}</p>
-                        <p>Активность: {{ object.is_active }}</p>
-                        {% if user.is_staff or user.is_superuser %}
-                        <p>Автор: {{ object.owner }}</p>
-                        {% if object.is_active %}
-                        <a href="{% url 'mailing:deactivate_mail' object.pk %}" type="button"
-                           class="btn btn-danger">Деактивация рассылки</a>
-                        {% else %}
-                        <a href="{% url 'mailing:activate_mail' object.pk %}" type="button"
-                           class="btn btn-success">Активация рассылки</a>
-                        {% endif %}
-                        {% endif %}
-                    </div>
+        <h1 class="jumbotron-heading">Рассылки</h1>
+    </div>
+</section>
+
+<div class="col-12">
+    <a href="{% url 'mailing:mail_create' %}" type="button"
+       class="btn btn-success">Добавить рассылку</a>
+</div>
+
+
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <p class="d-inline-flex gap-1">-->
+<!--                <a href="{% url 'mailing:mail_create' %}" type="button"-->
+<!--                   class="btn btn-success">Добавить рассылку</a>-->
+<!--            </p>-->
+<div class="row">
+    {% for object in object_list %}
+    {% if user.is_staff or user.is_superuser or object.owner == user %}
+    <div class="col-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <p>{{ object.subject | title }}</p>
+                <p>{{ object.body | truncatechars:100}}</p>
+                <div class="btn-group">
+                    {% if user.is_superuser or object.owner == user %}
+                    <a href="{% url 'mailing:mail_view' object.pk %}" type="button"
+                       class="btn btn-success">Подробнее</a>
+
+                    <a href="{% url 'mailing:mail_update' object.pk %}" type="button"
+                       class="btn btn-success">Редактировать</a>
+                    <a href="{% url 'mailing:mail_delete' object.pk %}" type="button"
+                       class="btn btn-danger">Удалить</a>
+                    {% endif %}
                 </div>
+                <p></p>
+                <p>Начало: {{ object.start_date }}</p>
+                <p>Конец: {{ object.end_date }}</p>
+                <p>Периодичность: {{ object.periodicity }}</p>
+                <p>Статус: {{ object.status }}</p>
+                <p>Активность: {{ object.is_active }}</p>
+                {% if user.is_staff or user.is_superuser %}
+                <p>Автор: {{ object.owner }}</p>
+
+                {% endif %}
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
-        {% endblock %}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endblock %}

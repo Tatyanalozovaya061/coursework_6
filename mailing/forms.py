@@ -23,7 +23,7 @@ class MailForm(StyleFormMixin, forms.ModelForm):
 
     class Meta:
         model = Mail
-        exclude = ('next_date', 'owner', 'is_active',)
+        exclude = ('next_date', 'owner', 'status', 'is_active',)
 
         widgets = {
             'start_date': DateTimeInput(
@@ -31,6 +31,14 @@ class MailForm(StyleFormMixin, forms.ModelForm):
             'end_date': DateTimeInput(
                 attrs={'placeholder': 'ДД.ММ.ГГГГ ЧЧ:ММ:СС', 'type': 'datetime-local'}),
         }
+
+    def clean(self):
+        data = self.cleaned_data
+        if 'start_date' in data.keys() and 'end_date' in data.keys():
+            start_date = data['start_date']
+            end_date = data['end_date']
+            if start_date >= end_date:
+                raise forms.ValidationError('Дата окончания рассылки должна быть больше даты начала')
 
 
 class MessageForm(StyleFormMixin, forms.ModelForm):

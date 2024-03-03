@@ -12,6 +12,69 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
+class MailListView(LoginRequiredMixin, ListView):
+    model = Mail
+
+
+class MailCreateView(LoginRequiredMixin, CreateView):
+    model = Mail
+    form_class = MailForm
+    success_url = reverse_lazy('mailing:mail_list')
+    extra_context = {
+        'title': 'Создание рассылки'
+    }
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class MailDetailView(LoginRequiredMixin, DetailView):
+    model = Mail
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if (self.object.owner != self.request.user and not self.request.user.is_superuser
+                and not self.request.user.is_staff):
+            raise Http404
+        return self.object
+
+
+class MailUpdateView(LoginRequiredMixin, UpdateView):
+    model = Mail
+    form_class = MailForm
+    success_url = reverse_lazy('mailing:mail_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+        return kwargs
+
+
+class MailDeleteView(LoginRequiredMixin, DeleteView):
+    model = Mail
+    success_url = reverse_lazy('mailing:mail_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.is_superuser:
+            raise Http404
+        return self.object
+
+
 class HomeView(ListView):
     model = Mail
     template_name = 'mailing/home.html'
@@ -82,87 +145,6 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
         if self.object.owner != self.request.user and not self.request.user.is_superuser:
             raise Http404
         return self.object
-
-
-class MailListView(LoginRequiredMixin, ListView):
-    model = Mail
-
-
-class MailCreateView(LoginRequiredMixin, CreateView):
-    model = Mail
-    form_class = MailForm
-    success_url = reverse_lazy('mailing:mail_list')
-    extra_context = {
-        'title': 'Создание рассылки'
-    }
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
-
-    def form_valid(self, form):
-        self.object = form.save()
-        self.object.owner = self.request.user
-        self.object.save()
-        return super().form_valid(form)
-
-
-class MailDetailView(LoginRequiredMixin, DetailView):
-    model = Mail
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if (self.object.owner != self.request.user and not self.request.user.is_superuser
-                and not self.request.user.is_staff):
-            raise Http404
-        return self.object
-
-
-class MailUpdateView(LoginRequiredMixin, UpdateView):
-    model = Mail
-    form_class = MailForm
-    success_url = reverse_lazy('mailing:mail_list')
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_superuser:
-            raise Http404
-        return self.object
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request})
-        return kwargs
-
-
-class MailDeleteView(LoginRequiredMixin, DeleteView):
-    model = Mail
-    success_url = reverse_lazy('mailing:mail_list')
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_superuser:
-            raise Http404
-        return self.object
-
-
-@login_required
-@permission_required('mailing.set_is_active', login_url='mailing:mail_list')
-def deactivate_mail(request, pk):
-    user = Mail.objects.get(pk=pk)
-    user.is_active = False
-    user.save()
-    return redirect(reverse('mailing:mail_list'))
-
-
-@login_required
-@permission_required('mailing.set_is_active', login_url='mailing:mail_list')
-def activate_mail(request, pk):
-    user = Mail.objects.get(pk=pk)
-    user.is_active = True
-    user.save()
-    return redirect(reverse('mailing:mail_list'))
 
 
 class MessageCreateView(CreateView):
