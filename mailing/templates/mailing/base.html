@@ -35,10 +35,13 @@
                     {% if user.is_authenticated %}
                     <a href="{% url 'users:profile' %}" type="button"
                        class="btn btn-sm btn-outline-secondary">Профиль</a>
-                    <a href="{% url 'users:logout' %}" type="button" class="btn btn-sm btn-outline-secondary">Выход</a>
+                    <a href="{% url 'users:logout' %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Выход</a>
                     {% else %}
-                    <a href="{% url 'users:login' %}" type="button" class="btn btn-sm btn-outline-secondary">Вход</a>
-                    <a href="{% url 'users:register' %}" type="button" class="btn btn-sm btn-outline-secondary">Регистрация</a>
+                    <a href="{% url 'users:login' %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Вход</a>
+                    <a href="{% url 'users:register' %}" type="button"
+                       class="btn btn-sm btn-outline-secondary">Регистрация</a>
                     {% endif %}
                 </div>
             </div>
